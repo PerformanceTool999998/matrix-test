@@ -1,0 +1,89 @@
+cases:
+  - id: TC_LOGIN_001
+    name: 正常登录流程
+    description: 使用正确手机号和验证码登录
+    priority: P0
+    preconditions:
+      - 已安装应用
+      - 网络正常
+    steps:
+      - action: click
+        target: 我的
+        target_type: text
+        timeout: 5
+        description: 点击底部"我的"Tab
+      - action: click
+        target: 登录/注册
+        target_type: text
+        timeout: 5
+        description: 点击登录入口
+      - action: input
+        target: com.example.app:id/et_phone
+        target_type: resourceId
+        value: "13800138000"
+        timeout: 5
+        description: 输入手机号
+      - action: input
+        target: com.example.app:id/et_code
+        target_type: resourceId
+        value: "123456"
+        timeout: 5
+        description: 输入验证码
+      - action: click
+        target: 登录
+        target_type: text
+        timeout: 5
+        description: 点击登录按钮
+      - action: assert
+        target: 首页
+        target_type: text
+        timeout: 10
+        description: 断言进入首页
+    expected_result: 登录成功，显示首页
+    tags:
+      - 登录
+      - 冒烟
+
+  - id: TC_LOGIN_002
+    name: 验证码错误
+    description: 输入错误验证码，验证提示
+    priority: P1
+    preconditions:
+      - 已安装应用
+    steps:
+      - action: click
+        target: 我的
+        target_type: text
+        timeout: 5
+        description: 点击底部"我的"Tab
+      - action: click
+        target: 登录/注册
+        target_type: text
+        timeout: 5
+        description: 点击登录入口
+      - action: input
+        target: com.example.app:id/et_phone
+        target_type: resourceId
+        value: "13800138000"
+        timeout: 5
+        description: 输入手机号
+      - action: input
+        target: com.example.app:id/et_code
+        target_type: resourceId
+        value: "000000"
+        timeout: 5
+        description: 输入错误验证码
+      - action: click
+        target: 登录
+        target_type: text
+        timeout: 5
+        description: 点击登录按钮
+      - action: assert
+        target: 验证码错误
+        target_type: text
+        timeout: 5
+        description: 断言显示错误提示
+    expected_result: 提示"验证码错误"
+    tags:
+      - 登录
+      - 异常

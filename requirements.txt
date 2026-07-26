@@ -1,0 +1,36 @@
+# MatrixTest - Python 依赖
+# AI 生成
+openai>=1.0.0
+httpx>=0.25.0
+
+# UI 自动化
+uiautomator2>=2.16.0
+appium-python-client>=2.11.0
+selenium>=4.15.0
+
+# 性能监控 (与 MatrixPerformance Agent 共用)
+requests>=2.31.0
+psutil>=5.9.0
+
+# 数据处理
+pandas>=2.0.0
+numpy>=1.24.0
+
+# 报告生成
+jinja2>=3.1.0
+markdown>=3.5.0
+allure-pytest>=2.13.0
+
+# CI/CD 集成
+#python-gitlab>=4.0.0
+#PyGithub>=2.0.0
+
+# 工具#
+pyyaml>=6.0.0
+python-dotenv>=1.0.0
+colorama>=0.4.6
+tqdm>=4.66.0
+
+# 测试框架
+pytest>=7.4.0
+pytest-html>=4.1.0

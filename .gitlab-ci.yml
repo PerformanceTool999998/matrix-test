@@ -1,0 +1,51 @@
+stages:
+  - generate
+  - test
+  - report
+
+variables:
+  TARGET_PACKAGE: "com.example.app"
+  PERF_SERVER_URL: "http://matrix-performance:8000"
+
+# 生成测试用例
+generate_cases:
+  stage: generate
+  script:
+    - pip install -r requirements.txt
+    - python main.py generate --prd docs/prd.md --output tests/cases
+  artifacts:
+    paths:
+      - tests/cases/
+
+# 执行冒烟测试
+smoke_test:
+  stage: test
+  dependencies:
+    - generate_cases
+  script:
+    - python main.py run --cases tests/cases/generated_cases.yaml --package $TARGET_PACKAGE --perf --report all
+  artifacts:
+    when: always
+    paths:
+      - output/
+    reports:
+      junit: output/*.xml
+
+# 生成报告
+report:
+  stage: report
+  dependencies:
+    - smoke_test
+  script:
+    - echo "Reports generated"
+  artifacts:
+    paths:
+      - output/reports/
+
+# 定时任务（每晚执行）
+nightly:
+  stage: test
+  script:
+    - python main.py ci --suite regression
+  only:
+    - schedules

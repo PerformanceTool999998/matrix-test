@@ -1,0 +1,205 @@
+cases:
+- id: TC_ORDER_001
+  name: 正常下单流程
+  description: 用户选择商品进行支付，输入正确支付密码，下单成功
+  priority: P0
+  preconditions:
+  - 已安装应用
+  - 网络正常
+  - 用户已登录
+  - 商品列表可用
+  steps:
+  - action: click
+    target: 商品列表
+    target_type: text
+    value: null
+    timeout: 5
+    description: 点击进入商品列表
+  - action: click
+    target: 商品名称
+    target_type: text
+    value: null
+    timeout: 5
+    description: 选择一个商品
+  - action: click
+    target: 加入购物车
+    target_type: text
+    value: null
+    timeout: 5
+    description: 点击'加入购物车'
+  - action: click
+    target: 去结算
+    target_type: text
+    value: null
+    timeout: 5
+    description: 点击'去结算'
+  - action: input
+    target: 支付密码输入框
+    target_type: resourceId
+    value: '123456'
+    timeout: 5
+    description: 输入正确的支付密码
+  - action: click
+    target: 确认支付
+    target_type: text
+    value: null
+    timeout: 5
+    description: 点击'确认支付'
+  expected_result: 支付成功，订单详情显示
+  tags:
+  - 下单
+  - 支付
+  - 正常流程
+- id: TC_ORDER_002
+  name: 支付密码错误
+  description: 用户输入错误的支付密码进行支付
+  priority: P1
+  preconditions:
+  - 已安装应用
+  - 网络正常
+  - 用户已登录
+  - 商品列表可用
+  steps:
+  - action: click
+    target: 商品列表
+    target_type: text
+    value: null
+    timeout: 5
+    description: 点击进入商品列表
+  - action: click
+    target: 商品名称
+    target_type: text
+    value: null
+    timeout: 5
+    description: 选择一个商品
+  - action: click
+    target: 加入购物车
+    target_type: text
+    value: null
+    timeout: 5
+    description: 点击'加入购物车'
+  - action: click
+    target: 去结算
+    target_type: text
+    value: null
+    timeout: 5
+    description: 点击'去结算'
+  - action: input
+    target: 支付密码输入框
+    target_type: resourceId
+    value: '1234567'
+    timeout: 5
+    description: 输入错误的支付密码
+  - action: click
+    target: 确认支付
+    target_type: text
+    value: null
+    timeout: 5
+    description: 点击'确认支付'
+  expected_result: 支付失败，显示支付密码错误提示
+  tags:
+  - 下单
+  - 支付
+  - 异常流程
+- id: TC_ORDER_003
+  name: 支付密码为空
+  description: 用户未输入支付密码进行支付
+  priority: P1
+  preconditions:
+  - 已安装应用
+  - 网络正常
+  - 用户已登录
+  - 商品列表可用
+  steps:
+  - action: click
+    target: 商品列表
+    target_type: text
+    value: null
+    timeout: 5
+    description: 点击进入商品列表
+  - action: click
+    target: 商品名称
+    target_type: text
+    value: null
+    timeout: 5
+    description: 选择一个商品
+  - action: click
+    target: 加入购物车
+    target_type: text
+    value: null
+    timeout: 5
+    description: 点击'加入购物车'
+  - action: click
+    target: 去结算
+    target_type: text
+    value: null
+    timeout: 5
+    description: 点击'去结算'
+  - action: input
+    target: 支付密码输入框
+    target_type: resourceId
+    value: ''
+    timeout: 5
+    description: 未输入支付密码
+  - action: click
+    target: 确认支付
+    target_type: text
+    value: null
+    timeout: 5
+    description: 点击'确认支付'
+  expected_result: 支付失败，显示支付密码不能为空提示
+  tags:
+  - 下单
+  - 支付
+  - 异常流程
+- id: TC_ORDER_004
+  name: 商品库存不足
+  description: 用户选择一个库存不足的商品进行支付
+  priority: P1
+  preconditions:
+  - 已安装应用
+  - 网络正常
+  - 用户已登录
+  - 商品列表可用
+  steps:
+  - action: click
+    target: 商品列表
+    target_type: text
+    value: null
+    timeout: 5
+    description: 点击进入商品列表
+  - action: click
+    target: 库存不足商品名称
+    target_type: text
+    value: null
+    timeout: 5
+    description: 选择一个库存不足的商品
+  - action: click
+    target: 加入购物车
+    target_type: text
+    value: null
+    timeout: 5
+    description: 点击'加入购物车'
+  - action: click
+    target: 去结算
+    target_type: text
+    value: null
+    timeout: 5
+    description: 点击'去结算'
+  - action: input
+    target: 支付密码输入框
+    target_type: resourceId
+    value: '123456'
+    timeout: 5
+    description: 输入正确的支付密码
+  - action: click
+    target: 确认支付
+    target_type: text
+    value: null
+    timeout: 5
+    description: 点击'确认支付'
+  expected_result: 支付失败，显示库存不足提示
+  tags:
+  - 下单
+  - 支付
+  - 异常流程
