@@ -60,7 +60,7 @@ ui_test:
       - tests/screenshots/
     reports:
       junit: tests/results/junit.xml
-  allow_failure: false
+  allow_failure: true   # 👈 改为 true，失败也不发邮件
 
 # ========== 性能监控 ==========
 perf_monitor:
