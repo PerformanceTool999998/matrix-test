@@ -1,90 +1,90 @@
-# MatrixTest - GitLab CI 配置
-# 每次代码提交/Push/MR 时自动执行 UI 测试 + 性能监控
+# # MatrixTest - GitLab CI 配置
+# # 每次代码提交/Push/MR 时自动执行 UI 测试 + 性能监控
 
-stages:
-  - setup
-  - ai_generate
-  - test
-  - perf_collect
-  - report
+# stages:
+#   - setup
+#   - ai_generate
+#   - test
+#   - perf_collect
+#   - report
 
-variables:
-  TARGET_PACKAGE: "com.example.app"
-  PERF_SERVER_URL: "http://localhost:8000"
-  AI_PROVIDER: "openai"
+# variables:
+#   TARGET_PACKAGE: "com.example.app"
+#   PERF_SERVER_URL: "http://localhost:8000"
+#   AI_PROVIDER: "openai"
 
-# ========== 环境准备 ==========
-setup:
-  stage: setup
-  image: python:3.11-slim
-  before_script:
-    - apt-get update && apt-get install -y adb
-    - pip install -r requirements.txt
-  script:
-    - echo "环境准备完成"
-    - python -c "import uiautomator2; print('uiautomator2 OK')"
-  cache:
-    paths:
-      - .venv/
+# # ========== 环境准备 ==========
+# setup:
+#   stage: setup
+#   image: python:3.11-slim
+#   before_script:
+#     - apt-get update && apt-get install -y adb
+#     - pip install -r requirements.txt
+#   script:
+#     - echo "环境准备完成"
+#     - python -c "import uiautomator2; print('uiautomator2 OK')"
+#   cache:
+#     paths:
+#       - .venv/
 
-# ========== AI 生成用例 ==========
-ai_generate:
-  stage: ai_generate
-  image: python:3.11-slim
-  script:
-    - echo "🤖 AI 生成测试用例..."
-    - python -c "
-from ai_generator.generator import generate_batch_cases;
-cases = generate_batch_cases('核心流程', '$TARGET_PACKAGE', 5);
-import json;
-json.dump(cases, open('tests/cases/ai_generated.json', 'w'), ensure_ascii=False, indent=2)
-"
-  artifacts:
-    paths:
-      - tests/cases/
+# # ========== AI 生成用例 ==========
+# ai_generate:
+#   stage: ai_generate
+#   image: python:3.11-slim
+#   script:
+#     - echo "🤖 AI 生成测试用例..."
+#     - python -c "
+# from ai_generator.generator import generate_batch_cases;
+# cases = generate_batch_cases('核心流程', '$TARGET_PACKAGE', 5);
+# import json;
+# json.dump(cases, open('tests/cases/ai_generated.json', 'w'), ensure_ascii=False, indent=2)
+# "
+#   artifacts:
+#     paths:
+#       - tests/cases/
 
-# ========== UI 自动化测试 ==========
-ui_test:
-  stage: test
-  image: python:3.11-slim
-  services:
-    - docker:dind
-  script:
-    - echo "📱 连接 ADB 设备..."
-    - adb connect $ANDROID_DEVICE_IP:5555  # 远程设备或云真机
-    - echo "🚀 执行 UI 测试..."
-    - python run_tests.py --cases tests/cases/ --output tests/results/
-  artifacts:
-    paths:
-      - tests/results/
-      - tests/screenshots/
-    reports:
-      junit: tests/results/junit.xml
-  allow_failure: true   # 👈 改为 true，失败也不发邮件
+# # ========== UI 自动化测试 ==========
+# ui_test:
+#   stage: test
+#   image: python:3.11-slim
+#   services:
+#     - docker:dind
+#   script:
+#     - echo "📱 连接 ADB 设备..."
+#     - adb connect $ANDROID_DEVICE_IP:5555  # 远程设备或云真机
+#     - echo "🚀 执行 UI 测试..."
+#     - python run_tests.py --cases tests/cases/ --output tests/results/
+#   artifacts:
+#     paths:
+#       - tests/results/
+#       - tests/screenshots/
+#     reports:
+#       junit: tests/results/junit.xml
+#   allow_failure: true   # 👈 改为 true，失败也不发邮件
 
-# ========== 性能监控 ==========
-perf_monitor:
-  stage: perf_collect
-  image: python:3.11-slim
-  script:
-    - echo "📊 采集性能数据..."
-    - python perf_monitor/collector.py --mode=ci --test-id=$CI_PIPELINE_ID
-  artifacts:
-    paths:
-      - tests/results/perf_*.json
+# # ========== 性能监控 ==========
+# perf_monitor:
+#   stage: perf_collect
+#   image: python:3.11-slim
+#   script:
+#     - echo "📊 采集性能数据..."
+#     - python perf_monitor/collector.py --mode=ci --test-id=$CI_PIPELINE_ID
+#   artifacts:
+#     paths:
+#       - tests/results/perf_*.json
 
-# ========== 报告生成 ==========
-report:
-  stage: report
-  image: python:3.11-slim
-  script:
-    - echo "📄 生成测试报告..."
-    - python reporter/report_generator.py --input tests/results/ --output tests/results/report.html
-    - echo "报告链接: $CI_PAGES_URL/tests/results/report.html"
-  artifacts:
-    paths:
-      - tests/results/report_*.html
-    expire_in: 30 days
-  only:
-    - main
-    - develop
+# # ========== 报告生成 ==========
+# report:
+#   stage: report
+#   image: python:3.11-slim
+#   script:
+#     - echo "📄 生成测试报告..."
+#     - python reporter/report_generator.py --input tests/results/ --output tests/results/report.html
+#     - echo "报告链接: $CI_PAGES_URL/tests/results/report.html"
+#   artifacts:
+#     paths:
+#       - tests/results/report_*.html
+#     expire_in: 30 days
+#   only:
+#     - main
+#     - develop
